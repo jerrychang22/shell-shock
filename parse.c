@@ -5,39 +5,60 @@
 #include "parse.h";
 
   
-  //make all this a seperate function to call
-  //it all again after command finishes
+
+void run(){
+  while(1){
+   
+    //Make pretty
+    printf("Please print command : ");
+    parseParams();
+
+  }
+}
+
 
 char **parseParams(){
-    char store[256];
-    char *line = store;
+  //store = array of typed in command
+  //line = pointer version of store
+  //params = commands split by ;
+  //commands = array for single command call
 
-    //Make this line print pretty stuff
-    printf("Please print command : ");
 
-    //Reads in a line
-    fgets(store, 256, stdin);
-    //Removes the newline for interpreting
-    *(strchr(line, "\n")) = 0;
+  //Reads a line
+  char store[256];
+  char *line = store;
+  fgets(store, 256, stdin);
+    
+  //Removes the newline for interpreting
+  *(strchr(line, "\n")) = 0;
+  
+  //Split all the commands by ;
+  char **params = semiBreak(line);
+  
+  //Loop through all ,fork and wait for child processes
+  int status;
+  while(*params){ //While there are commands
+    char *commands[256];
 
-    char **params = semiBreak(line);
+    //Split each line of commands by space and parse
     int i = 0;
-    //fix so that it operates on ";" and "|" and "<<>>"
+    for(i; commands[i] = strsep(*params, " "); i++);
+    commands[i] = 0;
     
+    //fork and exec here
     
-    for(
-    int status;
-    for(i; params[i] = strsep(&line, " "); i++);
-    params[i] = 0;
-    //return params;
-    //}
 
-
+    params++;
+  }
+  //return params;
+  //}
+  
+  
 }
 
 
 
-//Splits commands on semicolons
+//Splits string/commands on semicolons
 char **semiBreak(char *str){
     //Count number of semicolons for malloc purposes
     int count = 0;
@@ -46,7 +67,7 @@ char **semiBreak(char *str){
         count++;                        //Add to counter
         temp++;                         //And move pointer to next section
     }
-    free(temp);
+    //free(temp);
 
     
     char *commands[count + 1];
