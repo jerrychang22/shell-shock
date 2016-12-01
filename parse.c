@@ -37,18 +37,18 @@ void parseParams(){
   
   //Loop through all ,fork and wait for child processes
   int status;
-  while(params){ //While there are commands
+  while(*params){ //While there are commands
     char *commands[256];
-
     //Split each line of commands by space and parse
     //Make sure each command string is stripped of whitespace before
     //splitting by spaces
     int i = 0;
+    strip(*params);
+    printf("%c\n", **params);
     while(*params){
-        strip(*params);
-        commands[i] = strsep(&*params, " ");
-        i++;
-        printf("num args : %d\n", i);
+      commands[i] = strsep(&*params, " ");
+      i++;
+      //printf("num args : %d\n", i);
     }
     commands[i] = 0;
     
@@ -62,6 +62,7 @@ void parseParams(){
     //printf("Hi\n");
     params++;
   }
+
   
 }
 
@@ -76,13 +77,13 @@ char **semiBreak(char *str){
         count++;                        //Add to counter
         temp++;                         //And move pointer to next section
     }
+    count++; //Min : one command
 
-    
-    char *commands[count + 1];
+    printf("number of commands (#semis + 1) : %d\n", count);
+    char *commands[count + 1]; //Number of commands + terminating null
     char **ans = commands;
     int i = 0;
     for(i; commands[i] = strsep(&str, ";"); i++);
-    printf("%d\n", i);
     commands[i] = 0;
 
     return ans;
