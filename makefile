@@ -1,6 +1,8 @@
-GCC = gcc -c
+all:
+	gcc main.c parse.c -o main
 
-main : parse.c
-	$(GCC) parse.c
+run:
+	./main
 
-all :
+clean:
+	rm *.o *~

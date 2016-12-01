@@ -1,7 +1,14 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-parse();
+void run();
+
+void parseParams();
+
+char **semiBreak(char *str);
+
+void strip(char *str);
+
 
 
 #endif

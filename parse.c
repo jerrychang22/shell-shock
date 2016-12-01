@@ -2,7 +2,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "parse.h";
+#include "parse.h"
 
   
 
@@ -17,7 +17,7 @@ void run(){
 }
 
 
-char **parseParams(){
+void parseParams(){
   //store = array of typed in command
   //line = pointer version of store
   //params = commands split by ;
@@ -30,29 +30,38 @@ char **parseParams(){
   fgets(store, 256, stdin);
     
   //Removes the newline for interpreting
-  *(strchr(line, "\n")) = 0;
+  *(strstr(line, "\n")) = 0;
   
   //Split all the commands by ;
   char **params = semiBreak(line);
   
   //Loop through all ,fork and wait for child processes
   int status;
-  while(*params){ //While there are commands
+  while(params){ //While there are commands
     char *commands[256];
 
     //Split each line of commands by space and parse
+    //Make sure each command string is stripped of whitespace before
+    //splitting by spaces
     int i = 0;
-    for(i; commands[i] = strsep(*params, " "); i++);
+    while(*params){
+        strip(*params);
+        commands[i] = strsep(&*params, " ");
+        i++;
+        printf("num args : %d\n", i);
+    }
     commands[i] = 0;
     
     //fork and exec here
-    
-
+    if (fork() == 0){
+        execvp(commands[0], commands);
+    }    
+    else {
+        wait(&status);
+    }
+    //printf("Hi\n");
     params++;
   }
-  //return params;
-  //}
-  
   
 }
 
@@ -60,20 +69,20 @@ char **parseParams(){
 
 //Splits string/commands on semicolons
 char **semiBreak(char *str){
-    //Count number of semicolons for malloc purposes
+    //Count number of semicolons
     int count = 0;
     char *temp = str;
-    while (temp = strchr(temp, ";")){   //Move the pointer to the next found ;
+    while (temp = strstr(temp, ";")){   //Move the pointer to the next found ;
         count++;                        //Add to counter
         temp++;                         //And move pointer to next section
     }
-    //free(temp);
 
     
     char *commands[count + 1];
-    char *ans = commands;
+    char **ans = commands;
     int i = 0;
-    for(i; commands[i] = strsep(&str, ";"), i++);
+    for(i; commands[i] = strsep(&str, ";"); i++);
+    printf("%d\n", i);
     commands[i] = 0;
 
     return ans;
@@ -83,15 +92,16 @@ char **semiBreak(char *str){
 
 //NOTE TO SELF : Create a copy of original pointer so that you can free the
 //  the string later since the pointer is no longer the original malloced
-//  position
+//  position if you malloc
 //
 //Moves pointer to first non-whitespace character and writes a terminating
 //null after last non-whitespace character
-char *strip(char *str){
+void strip(char *str){
     
     //Move pointer to front of leading whitespace
     //isspace checks for spaces, tabs, and newlines (all whitespace)
     while(isspace(*str)) str++;
+    if (!str) return;
 
     //Make a pointer at the end of the string
     //- 1 for terminating null
@@ -99,5 +109,4 @@ char *strip(char *str){
     while (isspace(*ending)) ending--;
     *(ending + 1) = 0;  //Write in new terminating null
 
-    return str;
 }
