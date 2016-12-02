@@ -43,35 +43,35 @@ void parseParams(){
     int i, j, k;
     for (i = 0; commands[i] = strsep(&line, ";"); i++) {
         commands[i] = strip(commands[i]);
-	
-	if (strstr(commands[i], "|") != NULL){
-	  for (j = 0; pipelist[j] = strsep(&commands[i], "|"), j++){
-            pipelist[j] = strip(pipelist[j]);
-	  }
-	  parsePipe(pipelist);
-	}
-	
-	
 
-	//Nothing else but commands to parse
-	commandSplit(command, commands[i]);
-        
-	//Built in functions
-	if (strcmp(command[0], "exit") == 0) exit(0);
-	if (strcmp(command[0], "cd") == 0){
-	  //if (command[1]
-	  chdir(command[1]);
-	  continue;
-	}
-	
-	//Fork/exec
-	if (fork() == 0) {
-	  execvp(command[0], command);
-	}
-	else {
-	  int status;
-	  wait(&status);
-	}
+	    if (strstr(commands[i], "|") != NULL){
+    	    for (j = 0; pipelist[j] = strsep(&commands[i], "|"), j++){
+                pipelist[j] = strip(pipelist[j]);
+	        }
+	        parsePipe(pipelist);
+	    }
+
+        checkRedirs
+
+	    //Nothing else but commands to parse
+	    commandSplit(command, commands[i]);
+
+	    //Built in functions
+	    if (strcmp(command[0], "exit") == 0) exit(0);
+	    if (strcmp(command[0], "cd") == 0){
+	    //if (command[1]
+	        chdir(command[1]);
+	        continue;
+	    }
+
+	    //Fork/exec
+	    if (fork() == 0) {
+	        execvp(command[0], command);
+	    }
+	    else {
+	        int status;
+	        wait(&status);
+	    }
     }
 }
 
@@ -89,11 +89,18 @@ void parsePipe(char **pipelist){
   char *command[512];
   while (*pipelist){
     commandSplit(command, *pipelist);
-    
-    dup2();
+
+    int pipes[2];
+    pipe(pipes);
+
+    dup2(pipes[1], STDOUT_FILENO);
 
     pipelist++;
   }
+}
+
+void parseRedir(char **redirlist){
+
 }
 
 /*DEPRECATED
