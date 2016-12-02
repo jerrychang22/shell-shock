@@ -7,7 +7,7 @@ void parseParams();
 
 char **semiBreak(char *str);
 
-char *strip(char *str);
+void strip(char *str);
 
 
 
