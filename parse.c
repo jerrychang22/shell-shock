@@ -37,79 +37,66 @@ void parseParams(){
 
     char *commands[512];
     char *pipelist[512];
+    char *redirlist[512];
     char *command[512];
 
     int i, j, k;
     for (i = 0; commands[i] = strsep(&line, ";"); i++) {
         commands[i] = strip(commands[i]);
-        for (j = 0; pipelist[j] = strsep(&comands[i], "|"), j++){
+	
+	if (strstr(commands[i], "|") != NULL){
+	  for (j = 0; pipelist[j] = strsep(&commands[i], "|"), j++){
             pipelist[j] = strip(pipelist[j]);
-            for (k = 0; command[k] = strsep(&pipelist[i], " "); k++);
-            if (strcmp(command[0], "exit") == 0) exit(0);
-            if (strcmp(command[0], "cd") == 0){
-                chdir(command[1]);
-                continue;
-            }
+	  }
+	  parsePipe(pipelist);
+	}
+	
+	
 
-            int pid = fork();
-            if (pid == 0) {
-                execvp(command[0], command);
-            }
-            else {
-                int status;
-                wait(&status);
-            }
-        }
+	//Nothing else but commands to parse
+	commandSplit(command, commands[i]);
+        
+	//Built in functions
+	if (strcmp(command[0], "exit") == 0) exit(0);
+	if (strcmp(command[0], "cd") == 0){
+	  //if (command[1]
+	  chdir(command[1]);
+	  continue;
+	}
+	
+	//Fork/exec
+	if (fork() == 0) {
+	  execvp(command[0], command);
+	}
+	else {
+	  int status;
+	  wait(&status);
+	}
     }
-
-    /*
-
-    //Loop through all ,fork and wait for child processes
-    int status;
-    while(*params){ //While there are commands
-    printf("Check 2 (&*params): %d\n", &*params);
-
-    char *commands[256];
-//Split each line of commands by space and parse
-//Make sure each command string is stripped of whitespace before
-//splitting by spaces
-int i = 0;
-char *args = *params;
-args = strip(args);
-printf("Check 3\n");
-while(args){
-commands[i] = strsep(&args, " ");
-printf("Check 4 (&args): %d\n", &args);
-i++;
-    //printf("num args : %d\n", i);
-    }
-    commands[i] = 0;
-
-//Builtins
-/*
-if (strcmp(commands[0], "exit") == 0)
-exit(0);
-if (strcmp(commands[0], "cd") == 0){
-if (i == 1) chdir("~");
-else chdir(commands[1]);
-return;
 }
 
-//fork and exec here
-if (fork() == 0){
-execvp(commands[0], commands);
-}
-else {
-wait(&status);
-}
-//printf("Hi\n");
-     *params++;
-     }
-
-*/
+//Takes a single string command and splits it
+//Stores it into list
+void commandSplit(char **list, char *commands){
+  int i;
+  for (i = 0; list[i] = strsep(&commands, " "); i++);
 }
 
 
+
+void parsePipe(char **pipelist){
+  int i;
+  char *command[512];
+  while (*pipelist){
+    commandSplit(command, *pipelist);
+    
+    dup2();
+
+    pipelist++;
+  }
+}
+
+/*DEPRECATED
 
 //Splits string/commands on semicolons
 char **semiBreak(char *str){
@@ -133,7 +120,7 @@ char **semiBreak(char *str){
     return ans;
 }
 
-
+*/
 
 //NOTE TO SELF : Create a copy of original pointer so that you can free the
 //  the string later since the pointer is no longer the original malloced
