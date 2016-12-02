@@ -38,18 +38,19 @@ void parseParams(){
   //Loop through all ,fork and wait for child processes
   int status;
   while(*params){ //While there are commands
-    printf("Check 2\n");
+    printf("Check 2 (&*params): %d\n", &*params);
       
     char *commands[256];
     //Split each line of commands by space and parse
     //Make sure each command string is stripped of whitespace before
     //splitting by spaces
     int i = 0;
-    *params = strip(*params);
+    char *args = *params;
+	strip(args);
     printf("Check 3\n");
-    while(*params){
-      commands[i] = strsep(&*params, " ");
-      //printf("Command : %s", commands[i]);
+    while(args){
+      commands[i] = strsep(&args, " ");
+      printf("Check 4 (&args): %d\n", &args);
       i++;
       //printf("num args : %d\n", i);
     }
