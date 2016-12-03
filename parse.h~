@@ -9,7 +9,7 @@ void commandSplit(char **command, char *commands);
 
 void parsePipe(char *commands);
 
-void parseRedir(char *commands);
+void parseRedirs(char *commands);
 
 char **semiBreak(char *str);
 
